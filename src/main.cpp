@@ -1402,7 +1402,7 @@ int64_t GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, i
 	return nSubsidy + nFees;
 }
 
-static int64_t nTargetTimespan = 10 * 60;  // 10 mins
+static int64_t nTargetTimespan = 5 * 60;  // 10 mins
 
 // ppcoin: find last block index up to pindex
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake)
@@ -1427,19 +1427,40 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
 		return bnTargetLimit.GetCompact(); // second block
 
 	int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
-
+	LogPrintf("nActualSpacing: %s - %s\n", pindexPrev->GetBlockTime(), pindexPrevPrev->GetBlockTime());
 	if (nActualSpacing < 0) {
 		nActualSpacing = TARGET_SPACING;
 	}
-
 
 	// ppcoin: target change every block
 	// ppcoin: retarget with exponential moving toward target spacing
 	CBigNum bnNew;
 	bnNew.SetCompact(pindexPrev->nBits);
 	int64_t nInterval = nTargetTimespan / TARGET_SPACING;
+	LogPrintf("nInterval: %s\n",nInterval);
 	bnNew *= ((nInterval - 1) * TARGET_SPACING + nActualSpacing + nActualSpacing);
+	LogPrintf("bnNew1: %s\n",bnNew.ToString().c_str());
 	bnNew /= ((nInterval + 1) * TARGET_SPACING);
+	LogPrintf("bnNew2: %s\n",bnNew.ToString().c_str());
+
+	LogPrintf("======================================================\n");
+    CBigNum bnNew2;
+	bnNew2.SetCompact(pindexPrev->nBits);
+	int64_t nInterval2 = nTargetTimespan / TARGET_SPACING;
+    LogPrintf("nInterval: %s\n",nInterval2);
+
+	bnNew2 *= ((nInterval2 - 1) * TARGET_SPACING + nActualSpacing);
+    LogPrintf("bnNew1: %s\n",bnNew2.ToString().c_str());
+
+	bnNew2 /= ((nInterval2 + 1) * TARGET_SPACING);
+    LogPrintf("bnNew2: %s\n",bnNew2.ToString().c_str());
+
+LogPrintf("bnNew.GetCompact: %s\n",bnNew2.GetCompact());
+	LogPrintf("======================================================\n");
+
+        LogPrintf("bnTargetLimit: %s\n",bnTargetLimit.ToString().c_str());
+        LogPrintf("bnNew.GetCompact: %s\n",bnNew.GetCompact());
+
 
 	if (bnNew <= 0 || bnNew > bnTargetLimit)
 		bnNew = bnTargetLimit;

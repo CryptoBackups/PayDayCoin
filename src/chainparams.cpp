@@ -79,7 +79,7 @@ public:
         std::vector<CTxOut> vout;
         vout.resize(1);
         vout[0].SetEmpty();
-        CTransaction txNew(1, 1535760000, vin, vout, 0);
+        CTransaction txNew(1, 1535972400, vin, vout, 0);
 
         //LogPrintf("Genesis mainnet Transaction:  %s\n", txNew.ToString().c_str());
 
@@ -88,12 +88,12 @@ public:
         genesis.hashPrevBlock = 0;
         genesis.hashMerkleRoot = genesis.BuildMerkleTree();
         genesis.nVersion = 1;
-        genesis.nTime    = 1535760000;
+        genesis.nTime    = 1535972400;
         genesis.nBits = 504365040; // bnProofOfWorkLimit.GetCompact();
         genesis.nNonce   = 10285;
 
         hashGenesisBlock = genesis.GetHash();
-        if (hashGenesisBlock != uint256("0x5d02a4e04b0bb2c64dc2fc0d6e5ed11582c58daa0337f73b97f5f9a4d6559807") ) {
+        if (hashGenesisBlock != uint256("0xdefaad81b1502b4b9c90cb4bbe0710cedcdf60b06bb8ffa6ba72beaf1765aea5") ) {
             LogPrintf("================Genesis error===================\n");
             LogPrintf("Genesis hash: %s \n", genesis.GetHash().ToString().c_str());
             LogPrintf("Genesis nTime: %s \n", genesis.nTime);
@@ -102,8 +102,8 @@ public:
             LogPrintf("Genesis Merkle: %s \n", genesis.hashMerkleRoot.ToString().c_str());
             LogPrintf("===================================\n");
         }
-        assert(hashGenesisBlock == uint256("0x5d02a4e04b0bb2c64dc2fc0d6e5ed11582c58daa0337f73b97f5f9a4d6559807"));
-        assert(genesis.hashMerkleRoot == uint256("0xdb11894be412e9cd3d27ce8cbf8de644d04afb397279a95819274d4deb74231b"));
+        assert(hashGenesisBlock == uint256("0xdefaad81b1502b4b9c90cb4bbe0710cedcdf60b06bb8ffa6ba72beaf1765aea5"));
+        assert(genesis.hashMerkleRoot == uint256("0x2d5b1323381c7358e175bf36f4babb21cb4269966bd72d37680c2743e38408e4"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,50);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,85);
@@ -172,7 +172,7 @@ public:
         strDataDir = "testnet";
 
         hashGenesisBlock = genesis.GetHash();
-        assert(hashGenesisBlock == uint256("0x5d02a4e04b0bb2c64dc2fc0d6e5ed11582c58daa0337f73b97f5f9a4d6559807"));
+        assert(hashGenesisBlock == uint256("0xdefaad81b1502b4b9c90cb4bbe0710cedcdf60b06bb8ffa6ba72beaf1765aea5"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
