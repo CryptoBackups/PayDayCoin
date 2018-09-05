@@ -161,7 +161,7 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
         ParseMoney(mapArgs["-mintxfee"], nMinTxFee);
 
     pblock->nBits = GetNextTargetRequired(pindexPrev, fProofOfStake);
-
+    LogPrintf("GetNextTargetRequired: %s \n",pblock->nBits);
 
     // Collect memory pool transactions into the block
     int64_t nFees = 0;
@@ -220,9 +220,12 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
                 }
                 int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
                 nTotalIn += nValueIn;
+		LogPrintf("nValueIn: %s\n", nValueIn);
 
                 int nConf = txindex.GetDepthInMainChain();
                 dPriority += (double)nValueIn * nConf;
+		LogPrintf("dPriority: %s\n", dPriority);
+
             }
             if (fMissingInputs) continue;
 
@@ -569,14 +572,19 @@ void ThreadStakeMiner(CWallet *pwallet)
         //
         int64_t nFees;
         auto_ptr<CBlock> pblock(CreateNewBlock(reservekey, true, &nFees));
-        if (!pblock.get())
+        if (!pblock.get()) {
+            LogPrintf("ThreadStakeMiner: Get block failed\n");
             return;
-
+        }
+	LogPrintf("ThreadStakeMiner: %s\n", pblock.get()->ToString().c_str());
         // Trying to sign a block
+	LogPrintf("ThreadStakeMiner: try sign\n");
         if (pblock->SignBlock(*pwallet, nFees))
         {
             SetThreadPriority(THREAD_PRIORITY_NORMAL);
+            LogPrintf("ThreadStakeMiner: Check block\n");
             CheckStake(pblock.get(), *pwallet);
+	    LogPrintf("ThreadStakeMiner: After Check block\n");
             SetThreadPriority(THREAD_PRIORITY_LOWEST);
             MilliSleep(500);
         }
