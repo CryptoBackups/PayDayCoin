@@ -51,6 +51,8 @@ unsigned int nStakeMinAge = 24* 60 * 60; // 24 hours
 unsigned int nStakeMaxAge = 48 * 24 * 60 * 60; // 48 Days.
 unsigned int nModifierInterval = 2 * 60; // time to elapse before new modifier is computed
 
+static int64_t nTargetTimespan = 20 * 60;  // 10 mins
+
 int nCoinbaseMaturity = 63;
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
@@ -1402,7 +1404,6 @@ int64_t GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, i
 	return nSubsidy + nFees;
 }
 
-static int64_t nTargetTimespan = 5 * 60;  // 10 mins
 
 // ppcoin: find last block index up to pindex
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake)
