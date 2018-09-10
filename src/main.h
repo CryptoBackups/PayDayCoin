@@ -22,13 +22,13 @@ class CValidationState;
 
 #define START_MASTERNODE_PAYMENTS_TESTNET 1521072000  //Friday, February 9, 2018 10:00:00 AM GMT
 #define START_MASTERNODE_PAYMENTS 1521072000  //Friday, February 9, 2018 10:00:00 AM GMT
-#define STAKE_MIN_CONFIRMATIONS 370
+#define STAKE_MIN_CONFIRMATIONS 185
 #define PREMINE_AMOUNT 11773400 // initial premine 
 static const int64_t DARKSEND_COLLATERAL = (0.01*COIN);
 static const int64_t DARKSEND_POOL_MAX = (9999.99*COIN);
 
 static const int64_t STATIC_REWARD = 280 * COIN;
-static const int64_t TARGET_SPACING = 120; //120 sec
+static const int64_t TARGET_SPACING = 60; //120 sec
 
 #define INSTANTX_SIGNATURES_REQUIRED           10
 #define INSTANTX_SIGNATURES_TOTAL              15
