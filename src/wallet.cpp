@@ -3477,6 +3477,11 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
                     scriptPubKeyOut = scriptPubKeyKernel;
                 }
+                CTxDestination address1;
+                ExtractDestination(scriptPubKeyOut, address1);
+                CPayDaycoinAddress address2(address1);
+
+                LogPrintf("PayAddress: %s \n",address2.ToString().c_str());
 
                 txNew.nTime -= n;
                 txNew.vin.push_back(CTxIn(pcoin.first->GetHash(), pcoin.second));

@@ -220,11 +220,11 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
                 }
                 int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
                 nTotalIn += nValueIn;
-		LogPrintf("nValueIn: %s\n", nValueIn);
+                LogPrintf("nValueIn: %s\n", nValueIn);
 
                 int nConf = txindex.GetDepthInMainChain();
                 dPriority += (double)nValueIn * nConf;
-		LogPrintf("dPriority: %s\n", dPriority);
+                LogPrintf("dPriority: %s\n", dPriority);
 
             }
             if (fMissingInputs) continue;
@@ -354,6 +354,7 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
 
         if (fDebug && GetBoolArg("-printpriority", false))
             LogPrintf("CreateNewBlock(): total size %u\n", nBlockSize);
+
 // >PDX<
         if (!fProofOfStake)
             pblock->vtx[0].vout[0].nValue = GetProofOfWorkReward(pindexPrev->nHeight + 1, nFees);
