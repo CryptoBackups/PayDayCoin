@@ -3578,7 +3578,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         //spork
         if(!masternodePayments.GetBlockPayee(pindexPrev->nHeight+1, payee, vin)){
             CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
-            if(winningNode && !fIsInitialDownload && !fIsWalletGracePeriod){
+            if(winningNode && !fIsInitialDownload){
                 payee = GetScriptForDestination(winningNode->pubkey.GetID());
             } else {
                 return error("CreateCoinStake: Failed to detect masternode to pay\n");
