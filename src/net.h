@@ -333,6 +333,7 @@ public:
     int64_t nLastSendEmpty;
     int64_t nTimeConnected;
     int64_t nTimeOffset;
+    int64_t nTimeLastUpdate;
     CAddress addr;
     std::string addrName;
     CService addrLocal;

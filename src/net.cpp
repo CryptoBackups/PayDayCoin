@@ -100,8 +100,9 @@ void CheckPeer(CNode *pnode)
 
     if (pnode->fSuccessfullyConnected)
     {
+        LogPrintf("NODE: Update node at %s\n", pnode->nTimeLastUpdate);
 
-
+        //pnode->PushMessage("version");
 /*            CAddress addrLocal = GetLocalAddress(&pnode->addr);
         if (addrLocal.IsRoutable() && (CService)addrLocal != (CService)pnode->addrLocal)
         {
@@ -429,6 +430,7 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool darkSendMaste
         }
 
         pnode->nTimeConnected = GetTime();
+        pnode->nTimeLastUpdate = pnode->nTimeConnected;
         return pnode;
     }
     else
@@ -1068,8 +1070,8 @@ void ThreadSocketHandler()
                     pnode->fDisconnect = true;
                 }
             }
-
-            CheckPeer(pnode);
+            if ( pnode->nTimeLastUpdate < GetTime() - 600)
+                CheckPeer(pnode);
 
         }
         {
