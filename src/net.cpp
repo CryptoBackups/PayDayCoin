@@ -94,28 +94,23 @@ unsigned short GetListenPort()
     return (unsigned short)(GetArg("-port", Params().GetDefaultPort()));
 }
 
-// check peer list for status, blocks
-void CheckPeerList()
+// check peer for status, blocks
+void CheckPeer(CNode *pnode)
 {
 
-    LOCK(cs_vNodes);
-    BOOST_FOREACH(CNode* pnode, vNodes)
+    if (pnode->fSuccessfullyConnected)
     {
-        if (pnode->fSuccessfullyConnected)
-        {
 
 
 /*            CAddress addrLocal = GetLocalAddress(&pnode->addr);
-            if (addrLocal.IsRoutable() && (CService)addrLocal != (CService)pnode->addrLocal)
-            {
-                pnode->PushAddress(addrLocal);
-                pnode->addrLocal = addrLocal;
-            }
+        if (addrLocal.IsRoutable() && (CService)addrLocal != (CService)pnode->addrLocal)
+        {
+            pnode->PushAddress(addrLocal);
+            pnode->addrLocal = addrLocal;
+        }
 */
 
-        }
     }
-
 
 }
 
@@ -774,7 +769,6 @@ void ThreadSocketHandler()
         //
         // Disconnect nodes
         //
-        LogPrintf("ThreadSocketHandler: start thread\n");
         {
             LOCK(cs_vNodes);
             // Disconnect unused nodes
@@ -1074,6 +1068,9 @@ void ThreadSocketHandler()
                     pnode->fDisconnect = true;
                 }
             }
+
+            CheckPeer(pnode);
+
         }
         {
             LOCK(cs_vNodes);
@@ -1082,13 +1079,6 @@ void ThreadSocketHandler()
         }
     }
 }
-
-
-
-
-
-
-
 
 
 #ifdef USE_UPNP
@@ -1207,10 +1197,6 @@ void MapPort(bool)
 #endif
 
 
-
-
-
-
 void ThreadDNSAddressSeed()
 {
     // goal: only query DNS seeds if address need is acute
@@ -1253,16 +1239,6 @@ void ThreadDNSAddressSeed()
 
     LogPrintf("%d addresses found from DNS seeds\n", found);
 }
-
-
-
-
-
-
-
-
-
-
 
 
 void DumpAddresses()
@@ -1886,12 +1862,6 @@ public:
     }
 }
 instance_of_cnetcleanup;
-
-
-
-
-
-
 
 void RelayTransaction(const CTransaction& tx, const uint256& hash)
 {
