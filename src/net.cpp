@@ -94,6 +94,31 @@ unsigned short GetListenPort()
     return (unsigned short)(GetArg("-port", Params().GetDefaultPort()));
 }
 
+// check peer list for status, blocks
+void CheckPeerList()
+{
+
+    LOCK(cs_vNodes);
+    BOOST_FOREACH(CNode* pnode, vNodes)
+    {
+        if (pnode->fSuccessfullyConnected)
+        {
+
+
+/*            CAddress addrLocal = GetLocalAddress(&pnode->addr);
+            if (addrLocal.IsRoutable() && (CService)addrLocal != (CService)pnode->addrLocal)
+            {
+                pnode->PushAddress(addrLocal);
+                pnode->addrLocal = addrLocal;
+            }
+*/
+
+        }
+    }
+
+
+}
+
 // find 'best' local address for a particular peer
 bool GetLocal(CService& addr, const CNetAddr *paddrPeer)
 {
@@ -310,38 +335,10 @@ bool IsReachable(const CNetAddr& addr)
     return vfReachable[net] && !vfLimited[net];
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void AddressCurrentlyConnected(const CService& addr)
 {
     addrman.Connected(addr);
 }
-
-
 
 
 uint64_t CNode::nTotalBytesRecv = 0;
@@ -478,9 +475,6 @@ void CNode::PushVersion()
     PushMessage("version", PROTOCOL_VERSION, nLocalServices, nTime, addrYou, addrMe,
                 nLocalHostNonce, strSubVersion, nBestHeight);
 }
-
-
-
 
 
 banmap_t CNode::setBanned;
@@ -726,13 +720,6 @@ int CNetMessage::readData(const char *pch, unsigned int nBytes)
 }
 
 
-
-
-
-
-
-
-
 // requires LOCK(cs_vSend)
 void SocketSendData(CNode *pnode)
 {
@@ -787,6 +774,7 @@ void ThreadSocketHandler()
         //
         // Disconnect nodes
         //
+        LogPrintf("ThreadSocketHandler: start thread\n");
         {
             LOCK(cs_vNodes);
             // Disconnect unused nodes
@@ -846,7 +834,6 @@ void ThreadSocketHandler()
             nPrevNodeCount = vNodes.size();
             uiInterface.NotifyNumConnectionsChanged(nPrevNodeCount);
         }
-
 
         //
         // Find which sockets have data to receive
