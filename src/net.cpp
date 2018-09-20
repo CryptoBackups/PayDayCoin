@@ -101,7 +101,7 @@ void CheckPeer(CNode *pnode)
     if (pnode->fSuccessfullyConnected)
     {
         LogPrintf("NODE: Update node at %s\n", pnode->nTimeLastUpdate);
-
+        pnode->nTimeLastUpdate = GetTime();
         //pnode->PushMessage("version");
 /*            CAddress addrLocal = GetLocalAddress(&pnode->addr);
         if (addrLocal.IsRoutable() && (CService)addrLocal != (CService)pnode->addrLocal)
