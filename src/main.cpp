@@ -3646,9 +3646,11 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
             if (bn != mapBanNodes.end()) {
                 mapBanNodes[pfrom->addrName] += 1;
             } else {
-
+                mapBanNodes.insert(make_pair(pfrom->addrName,1));
             }
 
+            CNode::Ban(pfrom->addr,BanReasonNodeMisbehaving,mapBanNodes[pfrom->addrName]*60);
+            LogPrintf("Ban old node %s with version %s: bantime %s\n", pfrom->addr.ToString(), pfrom->nVersion,mapBanNodes[pfrom->addrName]*60);
 			// disconnect from peers older than this proto version
 			LogPrintf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString(), pfrom->nVersion);
 			pfrom->fDisconnect = true;
