@@ -100,8 +100,20 @@ void CheckPeer(CNode *pnode)
 
     if (pnode->fSuccessfullyConnected)
     {
+        int nVersion;
+        CNodeStats stats;
+        pnode->copyStats(stats);
+        nVersion = stats.nVersion;
         LogPrintf("NODE: Update node at %s\n", pnode->nTimeLastUpdate);
+        LogPrintf("NodeVersion: %s \n",stats.nVersion);
         pnode->nTimeLastUpdate = GetTime();
+        if (nVersion < PROTOCOL_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE) {
+            LogPrintf("CheckNode: Outdated node with version: %s \n",nVersion);
+        }
+
+
+
+
         //pnode->PushMessage("version");
 /*            CAddress addrLocal = GetLocalAddress(&pnode->addr);
         if (addrLocal.IsRoutable() && (CService)addrLocal != (CService)pnode->addrLocal)
@@ -947,7 +959,7 @@ void ThreadSocketHandler()
             }
             else if (CNode::IsBanned(addr))
             {
-                LogPrintf("connection from %s dropped (banned)\n", addr.ToString());
+                LogPrintf("connection from banned node %s dropped\n", addr.ToString());
                 closesocket(hSocket);
             }
             else
@@ -1070,8 +1082,9 @@ void ThreadSocketHandler()
                     pnode->fDisconnect = true;
                 }
             }
+
             if ( GetTime() - pnode->nTimeLastUpdate > 600)
-                CheckPeer(pnode);
+               CheckPeer(pnode);
 
         }
         {
@@ -1812,6 +1825,7 @@ void StartNode(boost::thread_group& threadGroup)
 
     // Dump network addresses
     threadGroup.create_thread(boost::bind(&LoopForever<void (*)()>, "dumpaddr", &DumpData, DUMP_ADDRESSES_INTERVAL * 1000));
+
 }
 
 bool StopNode()
