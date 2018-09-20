@@ -73,6 +73,7 @@ CCriticalSection cs_setservAddNodeAddresses;
 
 vector<std::string> vAddedNodes;
 CCriticalSection cs_vAddedNodes;
+map<std::string, int> mapBanNodes;
 
 NodeId nLastNodeId = 0;
 CCriticalSection cs_nLastNodeId;
