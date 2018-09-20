@@ -1070,7 +1070,7 @@ void ThreadSocketHandler()
                     pnode->fDisconnect = true;
                 }
             }
-            if ( pnode->nTimeLastUpdate < GetTime() - 600)
+            if ( GetTime() - pnode->nTimeLastUpdate > 600)
                 CheckPeer(pnode);
 
         }
