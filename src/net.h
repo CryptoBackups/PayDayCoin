@@ -160,7 +160,7 @@ extern map<CNetAddr, LocalServiceInfo> mapLocalHost;
 
 /* temporary banlist nodes    */
 
-extern std::map<std::string, int> mapBanNodes;
+extern map<std::string, int> mapBanNodes;
 
 
 /** Subversion as sent to the P2P network in `version` messages */
