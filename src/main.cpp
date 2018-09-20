@@ -3629,7 +3629,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
 		if (pfrom->nVersion != 0)
 		{
 			Misbehaving(pfrom->GetId(), 1);
-			return false;
+            //return false;
 		}
 
 		int64_t nTime;
