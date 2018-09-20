@@ -158,6 +158,11 @@ struct LocalServiceInfo {
 extern CCriticalSection cs_mapLocalHost;
 extern map<CNetAddr, LocalServiceInfo> mapLocalHost;
 
+/* temporary banlist nodes    */
+
+extern std::map<std::string, int> mapBanNodes;
+
+
 /** Subversion as sent to the P2P network in `version` messages */
 extern std::string strSubVersion;
 
@@ -170,6 +175,7 @@ public:
     int64_t nLastRecv;
     int64_t nTimeConnected;
     int64_t nTimeOffset;
+    int64_t nTimeLastUpdate;
     std::string addrName;
     int nVersion;
     std::string cleanSubVer;
@@ -183,8 +189,6 @@ public:
     double dPingWait;
     std::string addrLocal;
 };
-
-
 
 
 class CNetMessage {

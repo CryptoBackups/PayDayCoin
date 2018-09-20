@@ -3639,6 +3639,16 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
 		vRecv >> pfrom->nVersion >> pfrom->nServices >> nTime >> addrMe;
 		if (pfrom->nVersion < MIN_PEER_PROTO_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE)
 		{
+
+            std::map<std::string, int> bn;
+
+            bn = mapBanNodes.find(pfrom->addrName);
+            if (bn != mapBanNodes.end()) {
+                mapBanNodes[pfrom->addrName] += 1;
+            } else {
+
+            }
+
 			// disconnect from peers older than this proto version
 			LogPrintf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString(), pfrom->nVersion);
 			pfrom->fDisconnect = true;

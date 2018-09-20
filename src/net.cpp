@@ -111,9 +111,6 @@ void CheckPeer(CNode *pnode)
             LogPrintf("CheckNode: Outdated node with version: %s \n",nVersion);
         }
 
-
-
-
         //pnode->PushMessage("version");
 /*            CAddress addrLocal = GetLocalAddress(&pnode->addr);
         if (addrLocal.IsRoutable() && (CService)addrLocal != (CService)pnode->addrLocal)
