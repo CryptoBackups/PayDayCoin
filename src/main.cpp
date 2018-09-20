@@ -3640,7 +3640,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
 		if (pfrom->nVersion < MIN_PEER_PROTO_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE)
 		{
 
-            std::map<std::string, int> bn;
+            std::map<std::string, int>::iterator bn;
 
             bn = mapBanNodes.find(pfrom->addrName);
             if (bn != mapBanNodes.end()) {
