@@ -73,7 +73,7 @@ CCriticalSection cs_setservAddNodeAddresses;
 
 vector<std::string> vAddedNodes;
 CCriticalSection cs_vAddedNodes;
-map<std::string, int> mapBanNodes;
+map<CNetAddr, int> mapBanNodes;
 
 NodeId nLastNodeId = 0;
 CCriticalSection cs_nLastNodeId;
@@ -111,7 +111,7 @@ void CheckPeer(CNode *pnode)
         pnode->nTimeLastUpdate = GetTime();
         if (nVersion < PROTOCOL_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE) {
             LogPrintf("CheckNode: Outdated node with version: %s \n",nVersion);
-
+            pnode->fDisconnect = true;
         }
 
         //pnode->PushMessage("version");

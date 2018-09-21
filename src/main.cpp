@@ -3640,20 +3640,20 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
 		if (pfrom->nVersion < MIN_PEER_PROTO_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE)
 		{
 
-            std::map<std::string, int>::iterator bn;
-
-            bn = mapBanNodes.find(pfrom->addrName);
+            std::map<CNetAddr, int>::iterator bn;
+            CNetAddr nodeAddr = (CNetAddr)pfrom->addr;
+            bn = mapBanNodes.find(nodeAddr);
             if (bn != mapBanNodes.end()) {
-                mapBanNodes[pfrom->addrName]++;
-                LogPrintf("BanNodes: founded\n");
+                mapBanNodes[nodeAddr]++;
             } else {
-                LogPrintf("BanNodes: not found, add\n");
-                mapBanNodes.insert(make_pair(pfrom->addrName,1));
+                mapBanNodes.insert(make_pair(nodeAddr,1));
             }
-
-            CNode::Ban(pfrom->addr,BanReasonNodeMisbehaving,(mapBanNodes[pfrom->addrName]*60));
-            LogPrintf("Ban old node %s with version %s: bantime %s\n", pfrom->addr.ToString(), pfrom->nVersion,mapBanNodes[pfrom->addrName]*60);
-			// disconnect from peers older than this proto version
+            int count = mapBanNodes[nodeAddr];
+            int banscope = GetArg("-bancount", 10);
+            if (count > banscope ) {
+                CNode::Ban(pfrom->addr,BanReasonNodeMisbehaving,((mapBanNodes[nodeAddr] - banscope)*60));
+                LogPrintf("Ban old node %s with version %s: bantime %s\n", pfrom->addr.ToString(), pfrom->nVersion,mapBanNodes[nodeAddr]*60);
+            }
 			LogPrintf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString(), pfrom->nVersion);
 			pfrom->fDisconnect = true;
 			return false;
