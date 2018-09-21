@@ -3652,7 +3652,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
             int banscope = GetArg("-bancount", 10);
             if (count > banscope ) {
                 CNode::Ban(pfrom->addr,BanReasonNodeMisbehaving,((mapBanNodes[nodeAddr] - banscope)*60));
-                LogPrintf("Ban old node %s with version %s: bantime %s\n", pfrom->addr.ToString(), pfrom->nVersion,mapBanNodes[nodeAddr]*60);
+                LogPrintf("Ban old node %s with version %s: bantime %s\n", pfrom->addr.ToString(), pfrom->nVersion,((mapBanNodes[nodeAddr] - banscope)*60));
             }
 			LogPrintf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString(), pfrom->nVersion);
 			pfrom->fDisconnect = true;

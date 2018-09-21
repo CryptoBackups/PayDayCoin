@@ -1149,7 +1149,7 @@ bool AppInit2(boost::thread_group& threadGroup)
 
 
     // ****************  load bans params
-    if (GetArg("-banscore", 10)) LogPrintf("BanScore: > 10 ");
+    if (GetArg("-bancount", 10)) LogPrintf("BanScore = %s \n", GetArg("-bancount", 10));
 
 
     // ********************************************************* Step 12: finished
