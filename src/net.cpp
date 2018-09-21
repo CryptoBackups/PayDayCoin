@@ -1083,7 +1083,6 @@ void ThreadSocketHandler()
                 }
             }
 
-            if ( GetTime() - pnode->nTimeLastUpdate > 600)
                CheckPeer(pnode);
 
         }
