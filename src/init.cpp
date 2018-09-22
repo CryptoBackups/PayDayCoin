@@ -789,7 +789,7 @@ bool AppInit2(boost::thread_group& threadGroup)
         }
     }
 
-    fBanRootNodes = GetBoolArg("-nobanrootnodes", true);
+    fBanRootNodes = !GetBoolArg("-nobanrootnodes", true);
     LogPrintf("WhiteList: %s\n", GetArg("-whitebanlist",""));
 
 #ifdef ENABLE_WALLET

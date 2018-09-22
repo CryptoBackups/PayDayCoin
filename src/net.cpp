@@ -57,7 +57,7 @@ static std::vector<SOCKET> vhListenSocket;
 CAddrMan addrman;
 std::string strSubVersion;
 int nMaxConnections = 125;
-
+bool fBanRootNodes = false;
 vector<CNode*> vNodes;
 CCriticalSection cs_vNodes;
 map<CInv, CDataStream> mapRelay;
