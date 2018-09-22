@@ -190,6 +190,9 @@ std::string HelpMessage()
     string strUsage = _("Options:") + "\n";
     strUsage += "  -?                     " + _("This help message") + "\n";
     strUsage += "  -conf=<file>           " + _("Specify configuration file (default: PayDay.conf)") + "\n";
+    if (fHaveGUI)
+        strUsage += "  -resetguisettings      " + _("Reset GUI Settings at startup Wallet") + "\n";
+
     strUsage += "  -pid=<file>            " + _("Specify pid file (default: PayDayd.pid)") + "\n";
     strUsage += "  -datadir=<dir>         " + _("Specify data directory") + "\n";
     strUsage += "  -wallet=<dir>          " + _("Specify wallet file (within data directory)") + "\n";
@@ -815,31 +818,6 @@ bool AppInit2(boost::thread_group& threadGroup)
         return InitError(_("Error loading block database"));
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // as LoadBlockIndex can take several minutes, it's possible the user
     // requested to kill bitcoin-qt during the last operation. If so, exit.
     // As the program has not fully started yet, Shutdown() is possibly overkill.
@@ -1147,7 +1125,7 @@ bool AppInit2(boost::thread_group& threadGroup)
 	}
     }
 
-    //// debug print
+    // debug print
     LogPrintf("mapBlockIndex.size() = %u\n",   mapBlockIndex.size());
     LogPrintf("nBestHeight = %d\n",                   nBestHeight);
 #ifdef ENABLE_WALLET
@@ -1171,6 +1149,11 @@ bool AppInit2(boost::thread_group& threadGroup)
     else if (pwalletMain)
         threadGroup.create_thread(boost::bind(&ThreadStakeMiner, pwalletMain));
 #endif
+
+
+    // ****************  load bans params
+    if (GetArg("-bancount", 10)) LogPrintf("BanScore = %s \n", GetArg("-bancount", 10));
+
 
     // ********************************************************* Step 12: finished
 
