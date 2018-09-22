@@ -790,7 +790,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     }
 
     fBanRootNodes = !GetBoolArg("-nobanrootnodes", true);
-    LogPrintf("WhiteList: %s\n", GetArg("-whitebanlist",""));
+    //LogPrintf("WhiteList: %s\n", GetArg("-whitebanlist",""));
 
 #ifdef ENABLE_WALLET
     if (mapArgs.count("-reservebalance")) // ppcoin: reserve balance amount
