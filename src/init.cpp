@@ -790,6 +790,12 @@ bool AppInit2(boost::thread_group& threadGroup)
     }
 
     fBanRootNodes = !GetBoolArg("-nobanrootnodes", true);
+
+    BOOST_FOREACH(std::string sAddr, StrToVect(GetArg("-whitebanlist",""))) {
+        LogPrintf("Add node to whitelist: %s\n", sAddr);
+    }
+    //std::string SourceList = GetArg("-whitebanlist","");
+
     //LogPrintf("WhiteList: %s\n", GetArg("-whitebanlist",""));
 
 #ifdef ENABLE_WALLET
