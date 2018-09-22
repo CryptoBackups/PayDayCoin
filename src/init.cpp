@@ -218,6 +218,8 @@ std::string HelpMessage()
     strUsage += "  -synctime              " + _("Sync time with other nodes. Disable if time on your system is precise e.g. syncing with NTP (default: 1)") + "\n";
     strUsage += "  -banscore=<n>          " + _("Threshold for disconnecting misbehaving peers (default: 100)") + "\n";
     strUsage += "  -bantime=<n>           " + _("Number of seconds to keep misbehaving peers from reconnecting (default: 86400)") + "\n";
+    strUsage += "  -whitebanlist=<ip>     " + _("String with IP separate by <space> who no banned anytime") + "\n";
+    strUsage += "  -nobanrootnodes        " + _("No ban root network nodes (default: true)") + "\n";
     strUsage += "  -maxreceivebuffer=<n>  " + _("Maximum per-connection receive buffer, <n>*1000 bytes (default: 5000)") + "\n";
     strUsage += "  -maxsendbuffer=<n>     " + _("Maximum per-connection send buffer, <n>*1000 bytes (default: 1000)") + "\n";
 #ifdef USE_UPNP
@@ -786,6 +788,9 @@ bool AppInit2(boost::thread_group& threadGroup)
             AddLocal(CService(strAddr, GetListenPort(), fNameLookup), LOCAL_MANUAL);
         }
     }
+
+    fBanRootNodes = GetBoolArg("-nobanrootnodes", true);
+    LogPrintf("WhiteList: %s\n", GetArg("-whitebanlist",""));
 
 #ifdef ENABLE_WALLET
     if (mapArgs.count("-reservebalance")) // ppcoin: reserve balance amount

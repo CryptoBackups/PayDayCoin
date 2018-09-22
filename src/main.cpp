@@ -2837,9 +2837,11 @@ void Misbehaving(NodeId pnode, int howmuch)
 	if (howmuch == 0)
 		return;
 
+    //Params().DNSSeeds()[]
 	CNodeState *state = State(pnode);
 	if (state == NULL)
 		return;
+
 
 	state->nMisbehavior += howmuch;
 	if (state->nMisbehavior >= GetArg("-banscore", 100))
@@ -3632,32 +3634,33 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
             return false;
 		}
 
-		int64_t nTime;
-		CAddress addrMe;
-		CAddress addrFrom;
-		uint64_t nNonce = 1;
-		vRecv >> pfrom->nVersion >> pfrom->nServices >> nTime >> addrMe;
-		if (pfrom->nVersion < MIN_PEER_PROTO_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE)
-		{
-
+        if (pfrom->nVersion < MIN_PEER_PROTO_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE)
+        {
+            int count = 0;
             std::map<CNetAddr, int>::iterator bn;
             CNetAddr nodeAddr = (CNetAddr)pfrom->addr;
+
             bn = mapBanNodes.find(nodeAddr);
             if (bn != mapBanNodes.end()) {
                 mapBanNodes[nodeAddr]++;
             } else {
                 mapBanNodes.insert(make_pair(nodeAddr,1));
             }
-            int count = mapBanNodes[nodeAddr];
-            int banscope = GetArg("-bancount", 10);
-            if (count > banscope ) {
-                CNode::Ban(pfrom->addr,BanReasonNodeMisbehaving,((mapBanNodes[nodeAddr] - banscope)*60));
-                LogPrintf("Ban old node %s with version %s: bantime %s\n", pfrom->addr.ToString(), pfrom->nVersion,((mapBanNodes[nodeAddr] - banscope)*60));
-            }
-			LogPrintf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString(), pfrom->nVersion);
-			pfrom->fDisconnect = true;
-			return false;
-		}
+            count = mapBanNodes[nodeAddr];
+
+            CNode::Ban(pfrom->addr,BanReasonNodeMisbehaving,(count*60));
+            LogPrintf("Ban node %s with old version %s: bantime = %s\n", pfrom->addr.ToString(), pfrom->nVersion,(count*60));
+
+            //LogPrintf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString(), pfrom->nVersion);
+            pfrom->fDisconnect = true;
+            return false;
+        }
+
+		int64_t nTime;
+		CAddress addrMe;
+		CAddress addrFrom;
+		uint64_t nNonce = 1;
+		vRecv >> pfrom->nVersion >> pfrom->nServices >> nTime >> addrMe;
 
 		if (pfrom->nVersion == 10300)
 			pfrom->nVersion = 300;
