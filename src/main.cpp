@@ -3634,6 +3634,12 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
             return false;
 		}
 
+		int64_t nTime;
+		CAddress addrMe;
+		CAddress addrFrom;
+		uint64_t nNonce = 1;
+		vRecv >> pfrom->nVersion >> pfrom->nServices >> nTime >> addrMe;
+
         if (pfrom->nVersion < MIN_PEER_PROTO_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE)
         {
             int count = 0;
@@ -3655,12 +3661,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
             pfrom->fDisconnect = true;
             return false;
         }
-
-		int64_t nTime;
-		CAddress addrMe;
-		CAddress addrFrom;
-		uint64_t nNonce = 1;
-		vRecv >> pfrom->nVersion >> pfrom->nServices >> nTime >> addrMe;
 
 		if (pfrom->nVersion == 10300)
 			pfrom->nVersion = 300;
