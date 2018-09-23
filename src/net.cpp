@@ -1,4 +1,4 @@
-// Copyright (c) 2009-2010 Satoshi Nakamoto
+﻿// Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -59,7 +59,7 @@ std::string strSubVersion;
 int nMaxConnections = 125;
 bool fBanRootNodes = false;
 vector<CNode*> vNodes;
-vector<CNetAddr> vWhiteListNodes;
+vector<std::string> vWhiteListNodes;
 CCriticalSection cs_vNodes;
 map<CInv, CDataStream> mapRelay;
 deque<pair<int64_t, CInv> > vRelayExpiration;

@@ -792,12 +792,8 @@ bool AppInit2(boost::thread_group& threadGroup)
     fBanRootNodes = !GetBoolArg("-nobanrootnodes", true);
 
     BOOST_FOREACH(std::string sAddr, StrToVect(GetArg("-whitebanlist",""))) {
-        std::string host = "";
-         int port =0;
-        SplitHostPort(sAddr,port,host);
-        CNetAddr wln = (CNetAddr)sAddr;
-        vWhiteListNodes.push_back(wln);
-        LogPrintf("Add node to whitelist: %s with host: %s and port %s\n",  wln.ToString(),host,port);
+        vWhiteListNodes.push_back(sAddr);
+        LogPrintf("Add node to whitelist: %s\n", sAddr);
     }
     //std::string SourceList = GetArg("-whitebanlist","");
 

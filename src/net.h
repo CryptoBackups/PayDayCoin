@@ -135,7 +135,7 @@ extern uint64_t nLocalHostNonce;
 extern CAddrMan addrman;
 extern int nMaxConnections;
 extern bool fBanRootNodes;
-extern std::vector<CNetAddr> vWhiteListNodes;
+extern std::vector<std::string> vWhiteListNodes;
 
 extern std::vector<CNode*> vNodes;
 extern CCriticalSection cs_vNodes;

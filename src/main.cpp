@@ -3645,6 +3645,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
 
             CNetAddr nodeAddr = (CNetAddr)pfrom->addr;
             bool rootNode = false;
+            bool wlNode = false;
             if (!fBanRootNodes){
                 const vector<CDNSSeedData> &vSeeds = Params().DNSSeeds();
                 BOOST_FOREACH(const CDNSSeedData &seed, vSeeds) {
@@ -3659,7 +3660,11 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
                         }
                     }
             }
-            if (!rootNode) {
+
+            BOOST_FOREACH(const std::string &wlAddr,vWhiteListNodes){
+                if (wlAddr == nodeAddr.ToStringIP()) wlNode = true;
+            }
+            if (!rootNode && !wlNode) {
                 int count = 0;
                 std::map<CNetAddr, int>::iterator bn;
                 bn = mapBanNodes.find(nodeAddr);
