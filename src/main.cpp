@@ -3666,7 +3666,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
                 if (bn != mapBanNodes.end()) {
                     mapBanNodes[nodeAddr]++;
                 } else {
-                    mapBanNodes.insert(make_pair(nodeAddr,1));
+                    mapBanNodes.insert(make_pair(nodeAddr,count));
                 }
                 count = mapBanNodes[nodeAddr];
                 int bantime = 2 << count;
