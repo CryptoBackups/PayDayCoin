@@ -101,13 +101,27 @@ void CheckPeer(CNode *pnode)
 
     if (pnode->fSuccessfullyConnected)
     {
-        int nVersion;
+
         CNodeStats stats;
         pnode->copyStats(stats);
-        nVersion = stats.nVersion;
+        int nVersion = stats.nVersion;
         CNetAddr nodeAddr = (CNetAddr)pnode->addr;
         //LogPrintf("NODE: Update node at %s with address %s \n", pnode->nTimeLastUpdate, nodeAddr.ToString());
         //LogPrintf("NodeVersion: %s \n",stats.nVersion);
+        const vector<CDNSSeedData> &vSeeds = Params().DNSSeeds();
+        BOOST_FOREACH(const CDNSSeedData &seed, vSeeds) {
+
+                vector<CNetAddr> vIPs;
+                if (LookupHost(seed.host.c_str(), vIPs))
+                {
+                    BOOST_FOREACH(CNetAddr& ip, vIPs)
+                    {
+                        LogPrintf("Compare node and root node: ", ip.ToString(), nodeAddr.ToString());
+                        if ( ip == nodeAddr) return;
+                    }
+                }
+            }
+        }
         pnode->nTimeLastUpdate = GetTime();
         if (nVersion < PROTOCOL_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE) {
             LogPrintf("CheckNode: Outdated node with version: %s and address: %s \n",nVersion, nodeAddr.ToString());
