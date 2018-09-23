@@ -59,6 +59,7 @@ std::string strSubVersion;
 int nMaxConnections = 125;
 bool fBanRootNodes = false;
 vector<CNode*> vNodes;
+vector<CNetAddr> vWhiteListNodes;
 CCriticalSection cs_vNodes;
 map<CInv, CDataStream> mapRelay;
 deque<pair<int64_t, CInv> > vRelayExpiration;
