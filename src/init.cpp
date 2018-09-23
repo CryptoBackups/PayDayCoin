@@ -795,8 +795,9 @@ bool AppInit2(boost::thread_group& threadGroup)
         std::string host = "";
          int port =0;
         SplitHostPort(sAddr,port,host);
-
-        LogPrintf("Add node to whitelist: %s with host: %s and port %s\n",  sAddr,host,port);
+        CNetAddr* wln = new CNetAddr(sAddr);
+        vWhiteListNodes.push_back(wln);
+        LogPrintf("Add node to whitelist: %s with host: %s and port %s\n",  wln->ToString(),host,port);
     }
     //std::string SourceList = GetArg("-whitebanlist","");
 
