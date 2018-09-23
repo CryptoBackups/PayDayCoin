@@ -123,6 +123,9 @@ void CheckPeer(CNode *pnode)
                     }
                 }
         }
+        BOOST_FOREACH(const std::string &wlAddr,vWhiteListNodes){
+            if (wlAddr == nodeAddr.ToStringIP()) return;
+        }
         pnode->nTimeLastUpdate = GetTime();
         if ( nVersion < PROTOCOL_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE) {
             LogPrintf("CheckNode: Outdated node with version: %s and address: %s \n",nVersion, nodeAddr.ToString());
