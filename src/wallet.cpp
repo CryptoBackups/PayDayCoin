@@ -777,7 +777,6 @@ void CWallet::SyncTransaction(const CTransaction& tx, const CBlock* pblock, bool
 
     AddToWalletIfInvolvingMe(tx, pblock, true);
 
-
 }
 
 void CWallet::RemoveConflictedTransactions(const CTransaction& tx)
@@ -871,7 +870,6 @@ int CWallet::GetRealInputDarksendRounds(CTxIn in, int rounds) const
         {
             return mDenomWtxes[hash].vout[nout].nRounds;
         }
-
 
         // bounds check
         if(nout >= wtx->vout.size())
@@ -3572,7 +3570,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     CTxIn vin;
     bool hasPayment = true;
 	bool fIsInitialDownload = IsInitialBlockDownload();
-	bool fIsWalletGracePeriod = IsWalletGracePeriod();
 		
     if(bMasterNodePayment) {
         //spork
