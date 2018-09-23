@@ -106,7 +106,7 @@ void CheckPeer(CNode *pnode)
         pnode->copyStats(stats);
         nVersion = stats.nVersion;
         CNetAddr nodeAddr = (CNetAddr)pnode->addr;
-        LogPrintf("NODE: Update node at %s with address %s \n", pnode->nTimeLastUpdate, nodeAddr.ToString());
+        //LogPrintf("NODE: Update node at %s with address %s \n", pnode->nTimeLastUpdate, nodeAddr.ToString());
         //LogPrintf("NodeVersion: %s \n",stats.nVersion);
         pnode->nTimeLastUpdate = GetTime();
         if (nVersion < PROTOCOL_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE) {
