@@ -3642,24 +3642,41 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
 
         if (pfrom->nVersion < MIN_PEER_PROTO_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE)
         {
-            int count = 0;
-            std::map<CNetAddr, int>::iterator bn;
+
             CNetAddr nodeAddr = (CNetAddr)pfrom->addr;
-
-            bn = mapBanNodes.find(nodeAddr);
-            if (bn != mapBanNodes.end()) {
-                mapBanNodes[nodeAddr]++;
-            } else {
-                mapBanNodes.insert(make_pair(nodeAddr,1));
+            bool rootNode = false;
+            if (!fBanRootNodes){
+                const vector<CDNSSeedData> &vSeeds = Params().DNSSeeds();
+                BOOST_FOREACH(const CDNSSeedData &seed, vSeeds) {
+                        vector<CNetAddr> vIPs;
+                        if (LookupHost(seed.host.c_str(), vIPs))
+                        {
+                            BOOST_FOREACH(CNetAddr& ip, vIPs)
+                            {
+                                //LogPrintf("Compare node and root node: %s = %s\n", ip.ToString(), nodeAddr.ToString());
+                                if ( ip == nodeAddr) rootNode = true;
+                            }
+                        }
+                    }
             }
-            count = mapBanNodes[nodeAddr];
+            if (!rootNode) {
+                int count = 0;
+                std::map<CNetAddr, int>::iterator bn;
+                bn = mapBanNodes.find(nodeAddr);
+                if (bn != mapBanNodes.end()) {
+                    mapBanNodes[nodeAddr]++;
+                } else {
+                    mapBanNodes.insert(make_pair(nodeAddr,1));
+                }
+                count = mapBanNodes[nodeAddr];
+                int bantime = 2 << count;
+                CNode::Ban(pfrom->addr,BanReasonNodeMisbehaving,(bantime*60));
+                LogPrintf("Ban node %s with old version %s: bantime = %s\n", pfrom->addr.ToString(), pfrom->nVersion,(bantime*60));
 
-            CNode::Ban(pfrom->addr,BanReasonNodeMisbehaving,(count*60));
-            LogPrintf("Ban node %s with old version %s: bantime = %s\n", pfrom->addr.ToString(), pfrom->nVersion,(count*60));
-
-            //LogPrintf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString(), pfrom->nVersion);
-            pfrom->fDisconnect = true;
-            return false;
+                //LogPrintf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString(), pfrom->nVersion);
+                pfrom->fDisconnect = true;
+                return false;
+            }
         }
 
 		if (pfrom->nVersion == 10300)
@@ -4542,6 +4559,22 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
 			if (!vAddr.empty())
 				pto->PushMessage("addr", vAddr);
 		}
+
+        if (!fBanRootNodes){
+            CNetAddr nodeAddr = (CNetAddr)pto->addr;
+            const vector<CDNSSeedData> &vSeeds = Params().DNSSeeds();
+            BOOST_FOREACH(const CDNSSeedData &seed, vSeeds) {
+                    vector<CNetAddr> vIPs;
+                    if (LookupHost(seed.host.c_str(), vIPs))
+                    {
+                        BOOST_FOREACH(CNetAddr& ip, vIPs)
+                        {
+                            //LogPrintf("Compare node and root node: %s = %s\n", ip.ToString(), nodeAddr.ToString());
+                            if ( ip == nodeAddr) State(pto->GetId())->fShouldBan = false;
+                        }
+                    }
+                }
+        }
 
 		if (State(pto->GetId())->fShouldBan) {
 			if (pto->addr.IsLocal())
