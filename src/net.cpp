@@ -116,7 +116,7 @@ void CheckPeer(CNode *pnode)
                 {
                     BOOST_FOREACH(CNetAddr& ip, vIPs)
                     {
-                        LogPrintf("Compare node and root node: ", ip.ToString(), nodeAddr.ToString());
+                        LogPrintf("Compare node and root node: %s = %s ", ip.ToString(), nodeAddr.ToString());
                         if ( ip == nodeAddr) return;
                     }
                 }
