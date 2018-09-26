@@ -160,10 +160,7 @@ struct LocalServiceInfo {
 extern CCriticalSection cs_mapLocalHost;
 extern map<CNetAddr, LocalServiceInfo> mapLocalHost;
 
-/* temporary banlist nodes    */
-
 extern map<CNetAddr, int> mapBanNodes;
-
 
 /** Subversion as sent to the P2P network in `version` messages */
 extern std::string strSubVersion;
@@ -311,8 +308,6 @@ public:
     bool                        fEnabled;
     
 };
-
-
 
 /** Information about a peer */
 class CNode
@@ -887,7 +882,6 @@ template<typename T1, typename T2, typename T3, typename T4, typename T5, typena
     void Subscribe(unsigned int nChannel, unsigned int nHops=0);
     void CancelSubscribe(unsigned int nChannel);
     void CloseSocketDisconnect();
-
 
     // Denial-of-service detection/prevention
     // The idea is to detect peers that are behaving
