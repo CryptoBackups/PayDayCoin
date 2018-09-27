@@ -3637,8 +3637,13 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
                     mapBanNodes.insert(make_pair(nodeAddr,count));
                 }
                 count = mapBanNodes[nodeAddr];
-                int bantime = (count == 0 ? 1 : 2 << count);
+                int bantime = (count == 0 ? 1 : 2 << (count - 1));
+                if ( (bantime*60) > 24*60*60) {
+                    bantime = 24*60*60;
+                    mapBanNodes[nodeAddr] = -1;
+                }
                 CNode::Ban(pfrom->addr,BanReasonNodeMisbehaving,(bantime*60));
+
                 LogPrintf("Ban connected node %s with old version %s on bantime = %s\n", pfrom->addr.ToString(), pfrom->nVersion,(bantime*60));
 
                 pfrom->fDisconnect = true;

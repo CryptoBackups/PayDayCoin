@@ -126,7 +126,7 @@ void CheckPeer(CNode *pnode)
         }
         pnode->nTimeLastUpdate = GetTime();
         if ( nVersion < PROTOCOL_VERSION && GetTime() > UPGDATE_WALLET_VERSION_DATE) {
-            LogPrintf("NodeManager: disconnect outdated node with version %s and address %s \n",nVersion, nodeAddr.ToString());
+            LogPrintf("Disconnect outdated node with version %s and address %s \n",nVersion, nodeAddr.ToString());
             pnode->fDisconnect = true;
         }
 
