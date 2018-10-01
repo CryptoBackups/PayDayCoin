@@ -354,7 +354,7 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
 
         if (fDebug && GetBoolArg("-printpriority", false))
             LogPrintf("CreateNewBlock(): total size %u\n", nBlockSize);
-
+        LogPrintf("CreateBlockTX: %s\n",mempool.size());
 // >PDX<
         if (!fProofOfStake)
             pblock->vtx[0].vout[0].nValue = GetProofOfWorkReward(pindexPrev->nHeight + 1, nFees);
@@ -577,9 +577,9 @@ void ThreadStakeMiner(CWallet *pwallet)
             LogPrintf("ThreadStakeMiner: Get block failed\n");
             return;
         }
-	LogPrintf("ThreadStakeMiner: %s\n", pblock.get()->ToString().c_str());
+            LogPrintf("ThreadStakeMiner: %s\n", pblock.get()->ToString().c_str());
         // Trying to sign a block
-	LogPrintf("ThreadStakeMiner: try sign\n");
+            LogPrintf("ThreadStakeMiner: try sign\n");
         if (pblock->SignBlock(*pwallet, nFees))
         {
             SetThreadPriority(THREAD_PRIORITY_NORMAL);
