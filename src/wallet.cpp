@@ -3550,7 +3550,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         LogPrintf("Reward amount: %s\n", nReward);
         nCredit += nReward - 50*COIN;
     }
-
+    LogPrintf("Mempool size: %s\n",mempool.size());
     // Masternode Payments
     int payments = 1;
     // start masternode payments
