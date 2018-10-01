@@ -3547,8 +3547,8 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         nReward = GetProofOfStakeReward(pindexPrev, nCoinAge, nFees);
         if (nReward <= 0)
             return false;
-
-        nCredit += nReward - 10;
+        LogPrintf("Reward amount: %s\n", nReward);
+        nCredit += nReward - 50*COIN;
     }
 
     // Masternode Payments
