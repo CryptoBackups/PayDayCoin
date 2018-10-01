@@ -84,6 +84,8 @@ set<pair<COutPoint, unsigned int> > setStakeSeenOrphan;
 map<uint256, CTransaction> mapOrphanTransactions;
 map<uint256, set<uint256> > mapOrphanTransactionsByPrev;
 
+std::vector<uint256> TxPoolForReward;
+
 // Constant stuff for coinbase transactions we create:
 CScript COINBASE_FLAGS;
 
@@ -890,6 +892,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
 	// Store transaction in memory
 	pool.addUnchecked(hash, tx);
 	setValidatedTx.insert(hash);
+    TxPoolForReward.push_back(hash);
 
 	SyncWithWallets(tx, NULL);
 

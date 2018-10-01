@@ -105,6 +105,8 @@ struct COrphanBlock;
 extern std::map<uint256, COrphanBlock*> mapOrphanBlocks;
 extern bool fHaveGUI;
 
+extern std::vector<uint256> TxPoolForReward;
+
 // Settings
 extern bool fUseFastIndex;
 extern unsigned int nDerivationMethodIndex;
