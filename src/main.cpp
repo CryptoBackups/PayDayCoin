@@ -1,4 +1,4 @@
-// Copyright (c) 2009-2010 Satoshi Nakamoto
+﻿// Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -834,7 +834,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
 		else if (!ignoreFees) {
 			int64_t txMinFee = GetMinFee(tx, nSize, true, GMF_RELAY);
 			if (fLimitFree && nFees < txMinFee)
-				return error("AcceptToMemoryPool : not enough fees %s, %d < %d",
+                return error("AcceptToMemoryPool: not enough fees %s, %d < %d",
 					hash.ToString(),
 					nFees, txMinFee);
 
@@ -893,10 +893,10 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
 	pool.addUnchecked(hash, tx);
 	setValidatedTx.insert(hash);
     TxPoolForReward.push_back(hash);
-
+   LogPrintf("Accept to Reward: %s (size %s)\n", hash.ToString(),TxPoolForReward.size() );
 	SyncWithWallets(tx, NULL);
 
-	LogPrint("mempool", "AcceptToMemoryPool : accepted %s (poolsz %u)\n",
+    LogPrint("mempool", "AcceptToMemoryPool: accepted %s (poolsz %u)\n",
 		hash.ToString(),
 		pool.mapTx.size());
 
@@ -4086,11 +4086,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
 					const uint256& orphanTxHash = *mi;
 					CTransaction& orphanTx = mapOrphanTransactions[orphanTxHash];
 					bool fMissingInputs2 = false;
-
-
-
-
-
 
 					if (AcceptToMemoryPool(mempool, orphanTx, true, &fMissingInputs2))
 					{
