@@ -2863,9 +2863,6 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
 	if (!fReindex && !fImporting && pblock->IsProofOfStake() && setStakeSeen.count(pblock->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash))
 		return error("ProcessBlock() : duplicate proof-of-stake (%s, %d) for block %s", pblock->GetProofOfStake().first.ToString(), pblock->GetProofOfStake().second, hash.ToString());
 
-
-
-
 	if (pblock->hashPrevBlock != hashBestChain)
 	{
 		// Extra checks to prevent "fill up memory by spamming with bogus blocks"
