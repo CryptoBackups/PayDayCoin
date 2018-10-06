@@ -893,7 +893,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
 	pool.addUnchecked(hash, tx);
 	setValidatedTx.insert(hash);
     TxPoolForReward.push_back(hash);
-   LogPrintf("Accept to Reward: %s (size %s)\n", hash.ToString(),TxPoolForReward.size() );
+    LogPrintf("Accept to Reward: %s (size %s)\n", hash.ToString(),TxPoolForReward.size() );
 	SyncWithWallets(tx, NULL);
 
     LogPrint("mempool", "AcceptToMemoryPool: accepted %s (poolsz %u)\n",
@@ -2239,9 +2239,11 @@ bool CBlock::SetBestChainInner(CTxDB& txdb, CBlockIndex *pindexNew)
 	pindexNew->pprev->pnext = pindexNew;
 
 	// Delete redundant memory transactions
-	BOOST_FOREACH(CTransaction& tx, vtx)
+    BOOST_FOREACH(CTransaction& tx, vtx) {
+
 		mempool.remove(tx);
 
+    }
 	return true;
 }
 
