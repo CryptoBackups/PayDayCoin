@@ -145,6 +145,7 @@ OBJS= \
     obj/scrypt.o \
     obj/sync.o \
     obj/txmempool.o \
+    obj/txrewardpool.o \
     obj/util.o \
     obj/hash.o \
     obj/noui.o \
