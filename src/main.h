@@ -9,6 +9,7 @@
 #include "bignum.h"
 #include "sync.h"
 #include "txmempool.h"
+#include "txrewardpool.h"
 #include "net.h"
 #include "script.h"
 #include "scrypt.h"
@@ -105,7 +106,7 @@ struct COrphanBlock;
 extern std::map<uint256, COrphanBlock*> mapOrphanBlocks;
 extern bool fHaveGUI;
 
-extern std::vector<uint256> TxPoolForReward;
+extern CTxRewardPool rewardpool;
 
 // Settings
 extern bool fUseFastIndex;

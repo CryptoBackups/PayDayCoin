@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = PayDayCoin-qt
 VERSION = 1.0.0.0
-INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
+INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor src/boost_1_56_0
 QT += network printsupport
 DEFINES += ENABLE_WALLET
 DEFINES += BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
@@ -234,6 +234,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/db.h \
     src/txdb.h \
     src/txmempool.h \
+    src/txrewardpool.h \
     src/walletdb.h \
     src/script.h \
     src/scrypt.h \
@@ -355,6 +356,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/version.cpp \
     src/sync.cpp \
     src/txmempool.cpp \
+    src/txrewardpool.cpp \
     src/util.cpp \
     src/hash.cpp \
     src/netbase.cpp \

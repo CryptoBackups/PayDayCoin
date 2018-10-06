@@ -15,6 +15,7 @@
 #include "net.h"
 #include "txdb.h"
 #include "txmempool.h"
+#include "txrewardpool.h"
 #include "ui_interface.h"
 #include "instantx.h"
 #include "darksend.h"
@@ -43,6 +44,7 @@ set<CWallet*> setpwalletRegistered;
 CCriticalSection cs_main;
 
 CTxMemPool mempool;
+CTxRewardPool rewardpool;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 set<pair<COutPoint, unsigned int> > setStakeSeen;
@@ -83,8 +85,6 @@ set<pair<COutPoint, unsigned int> > setStakeSeenOrphan;
 
 map<uint256, CTransaction> mapOrphanTransactions;
 map<uint256, set<uint256> > mapOrphanTransactionsByPrev;
-
-std::vector<uint256> TxPoolForReward;
 
 // Constant stuff for coinbase transactions we create:
 CScript COINBASE_FLAGS;
@@ -892,8 +892,9 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
 	// Store transaction in memory
 	pool.addUnchecked(hash, tx);
 	setValidatedTx.insert(hash);
-    TxPoolForReward.push_back(hash);
-    LogPrintf("Accept to Reward: %s (size %s)\n", hash.ToString(),TxPoolForReward.size() );
+    rewardpool.add(hash, tx);
+
+    //LogPrintf("Accept to Reward: %s (size %s)\n", hash.ToString(),TxPoolForReward.size() );
 	SyncWithWallets(tx, NULL);
 
     LogPrint("mempool", "AcceptToMemoryPool: accepted %s (poolsz %u)\n",
@@ -2242,7 +2243,7 @@ bool CBlock::SetBestChainInner(CTxDB& txdb, CBlockIndex *pindexNew)
     BOOST_FOREACH(CTransaction& tx, vtx) {
 
 		mempool.remove(tx);
-
+        rewardpool.remove(tx);
     }
 	return true;
 }
