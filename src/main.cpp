@@ -894,7 +894,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
 	setValidatedTx.insert(hash);
     rewardpool.add(hash, tx);
 
-    //LogPrintf("Accept to Reward: %s (size %s)\n", hash.ToString(),TxPoolForReward.size() );
+    LogPrintf("Accept to Reward: %s (size %s)\n", hash.ToString(),TxPoolForReward.size() );
 	SyncWithWallets(tx, NULL);
 
     LogPrint("mempool", "AcceptToMemoryPool: accepted %s (poolsz %u)\n",
