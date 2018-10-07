@@ -3548,38 +3548,39 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         if (nReward <= 0)
             return false;
         //LogPrintf("Reward amount: %s\n", nReward);
-        //nCredit += nReward;
+        nCredit += nReward;
     }
 
     int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, nReward);
-    nCredit += (nReward - masternodePayment) * 0.6;
 
     LOCK(mempool.cs);
-    for (map<uint256, CTransaction>::iterator mi = mempool.mapTx.begin(); mi != mempool.mapTx.end(); ++mi)
-    {
-        CTransaction& tx = (*mi).second;
-        if (tx.IsCoinBase() || tx.IsCoinStake())
-            continue;
-        BOOST_FOREACH(const CTxIn& txin, tx.vin)
+    if (mempool.size() > 0 ) {
+        nCredit -= (nReward - masternodePayment) * 0.4;
+        for (map<uint256, CTransaction>::iterator mi = mempool.mapTx.begin(); mi != mempool.mapTx.end(); ++mi)
         {
-            CTransaction txPrev;
-            CTxIndex txindex;
-            if (!txPrev.ReadFromDisk(txdb, txin.prevout, txindex))
+            CTransaction& tx = (*mi).second;
+            if (tx.IsCoinBase() || tx.IsCoinStake())
+                continue;
+            BOOST_FOREACH(const CTxIn& txin, tx.vin)
             {
+                CTransaction txPrev;
+                CTxIndex txindex;
+                if (!txPrev.ReadFromDisk(txdb, txin.prevout, txindex))
+                {
 
+
+                }
+
+                //int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
+
+                CScript scriptPubKeyOut2;
+                scriptPubKeyOut2 = txPrev.vout[txin.prevout.n].scriptPubKey;
+
+                LogPrintf("ScriptKey: %s\n",scriptPubKeyOut2.ToString());
 
             }
-
-            //int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
-
-            CScript scriptPubKeyOut2;
-            scriptPubKeyOut2 = txPrev.vout[txin.prevout.n].scriptPubKey;
-
-            LogPrintf("ScriptKey: %s\n",scriptPubKeyOut2.ToString());
-
         }
     }
-
 
     LogPrintf("MemPoolSize size: %s\n", mempool.size());
     LogPrintf("TxPoolForReward size: %s\n",rewardpool.size());
