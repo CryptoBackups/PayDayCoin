@@ -3582,7 +3582,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 LogPrintf("Resize txNew.vout from %s to %s\n",txNew.vout.size(), rewpay);
                 LogPrintf("ScriptKey: %s\n",scriptPubKeyOut2.ToString());
                 LogPrintf("Amount: %s / %s = %s\n", nRewardV, rewcount, (nRewardV / rewcount));
-                txNew.vout.push_back(CTxOut(1, scriptPubKeyOut2));
+                txNew.vout.push_back(CTxOut((nRewardV / rewcount), scriptPubKeyOut2));
 
                 //txNew.vout.resize(rewpay);
                 //txNew.vout[rewpay-1].nValue = 0;//nRewardV / rewcount;
