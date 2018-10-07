@@ -3552,7 +3552,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     }
 
     int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, nReward);
-    int ExtendReward = 0;
+    unsigned int ExtendReward = 0;
 
     LOCK(mempool.cs);
     if (mempool.size() > 0 ) {
@@ -3582,12 +3582,14 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 LogPrintf("Resize txNew.vout from %s to %s\n",txNew.vout.size(), rewpay);
                 LogPrintf("ScriptKey: %s\n",scriptPubKeyOut2.ToString());
                 LogPrintf("Amount: %s / %s = %s\n", nRewardV, rewcount, (nRewardV / rewcount));
+                txNew.vout.push_back(CTxOut(0, scriptPubKeyOut2));
+
                 //txNew.vout.resize(rewpay);
                 //txNew.vout[rewpay-1].nValue = 0;//nRewardV / rewcount;
                 //txNew.vout[rewpay-1].scriptPubKey = scriptPubKeyOut2;
 
 
-                //ExtendReward++;
+                ExtendReward++;
             }
         }
     }
