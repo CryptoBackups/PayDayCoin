@@ -3558,13 +3558,15 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     if (mempool.size() > 0 ) {
         unsigned int nRewardV = (nReward - masternodePayment) * 0.4;
         nCredit -= nRewardV;
-        unsigned int rewpay;
+        unsigned int rewpay = 0;
         unsigned int rewcount = mempool.size();
+        unsigned int addrcount = 0;
         for (map<uint256, CTransaction>::iterator mi = mempool.mapTx.begin(); mi != mempool.mapTx.end(); ++mi)
         {
             CTransaction& tx = (*mi).second;
             if (tx.IsCoinBase() || tx.IsCoinStake())
                 continue;
+            addrcount = tx.vin.size();
             BOOST_FOREACH(const CTxIn& txin, tx.vin)
             {
                 CTransaction txPrev;
@@ -3582,7 +3584,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 LogPrintf("Resize txNew.vout from %s to %s\n",txNew.vout.size(), rewpay);
                 LogPrintf("ScriptKey: %s\n",scriptPubKeyOut2.ToString());
                 LogPrintf("Amount: %s / %s = %s\n", nRewardV, rewcount, (nRewardV / rewcount));
-                txNew.vout.push_back(CTxOut((nRewardV / rewcount), scriptPubKeyOut2));
+                txNew.vout.push_back(CTxOut((nRewardV / rewcount / addrcount), scriptPubKeyOut2));
 
                 //txNew.vout.resize(rewpay);
                 //txNew.vout[rewpay-1].nValue = 0;//nRewardV / rewcount;
