@@ -3552,10 +3552,14 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     }
 
     int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, nReward);
+    int ExtendReward = 0;
 
     LOCK(mempool.cs);
     if (mempool.size() > 0 ) {
-        nCredit -= (nReward - masternodePayment) * 0.4;
+        int nRewardV = (nReward - masternodePayment) * 0.4;
+        nCredit -= nRewardV;
+        int rewpay;
+        int rewcount = mempool.size();
         for (map<uint256, CTransaction>::iterator mi = mempool.mapTx.begin(); mi != mempool.mapTx.end(); ++mi)
         {
             CTransaction& tx = (*mi).second;
@@ -3568,16 +3572,20 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 if (!txPrev.ReadFromDisk(txdb, txin.prevout, txindex))
                 {
 
-
+                    continue;
                 }
 
                 //int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
 
                 CScript scriptPubKeyOut2;
                 scriptPubKeyOut2 = txPrev.vout[txin.prevout.n].scriptPubKey;
+                rewpay = txNew.vout.size() + 1;
+                txNew.vout.resize(rewpay);
+                txNew.vout[rewpay-1].nValue = nRewardV / rewcount;
+                txNew.vout[rewpay-1].scriptPubKey = scriptPubKeyOut2;
 
                 LogPrintf("ScriptKey: %s\n",scriptPubKeyOut2.ToString());
-
+                ExtendReward++;
             }
         }
     }
@@ -3635,21 +3643,21 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     //int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, nReward);
 
     // Set output amount
-    if (!hasPayment && txNew.vout.size() == 3) // 2 stake outputs, stake was split, no masternode payment
+    if (!hasPayment && txNew.vout.size() == (3 + ExtendReward)) // 2 stake outputs, stake was split, no masternode payment
     {
         txNew.vout[1].nValue = (blockValue / 2 / CENT) * CENT;
         txNew.vout[2].nValue = blockValue - txNew.vout[1].nValue;
     }
-    else if(hasPayment && txNew.vout.size() == 4) // 2 stake outputs, stake was split, plus a masternode payment
+    else if(hasPayment && txNew.vout.size() == (4 + ExtendReward)) // 2 stake outputs, stake was split, plus a masternode payment
     {
         txNew.vout[payments-1].nValue = masternodePayment;
         blockValue -= masternodePayment;
         txNew.vout[1].nValue = (blockValue / 2 / CENT) * CENT;
         txNew.vout[2].nValue = blockValue - txNew.vout[1].nValue;
     }
-    else if(!hasPayment && txNew.vout.size() == 2) // only 1 stake output, was not split, no masternode payment
+    else if(!hasPayment && txNew.vout.size() == (2 + ExtendReward)) // only 1 stake output, was not split, no masternode payment
         txNew.vout[1].nValue = blockValue;
-    else if(hasPayment && txNew.vout.size() == 3) // only 1 stake output, was not split, plus a masternode payment
+    else if(hasPayment && txNew.vout.size() == (3 + ExtendReward)) // only 1 stake output, was not split, plus a masternode payment
     {
         txNew.vout[payments-1].nValue = masternodePayment;
         blockValue -= masternodePayment;
