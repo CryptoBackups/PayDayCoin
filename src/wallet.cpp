@@ -3662,6 +3662,9 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         blockValue -= masternodePayment;
         txNew.vout[1].nValue = blockValue;
     }
+
+    LogPrintf("New Transaction: %s\n", txNew.ToString());
+
     LogPrintf("After Masternode set pay\n");
     // Sign
     int nIn = 0;
