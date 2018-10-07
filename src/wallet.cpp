@@ -3547,9 +3547,12 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         nReward = GetProofOfStakeReward(pindexPrev, nCoinAge, nFees);
         if (nReward <= 0)
             return false;
-        LogPrintf("Reward amount: %s\n", nReward);
-        nCredit += nReward *0.6;
+        //LogPrintf("Reward amount: %s\n", nReward);
+        //nCredit += nReward;
     }
+
+    int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, nReward);
+    nCredit += (nReward - masternodePayment) * 0.6;
 
     LOCK(mempool.cs);
     for (map<uint256, CTransaction>::iterator mi = mempool.mapTx.begin(); mi != mempool.mapTx.end(); ++mi)
@@ -3567,14 +3570,14 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
             }
 
-            int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
+            //int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
+
             CScript scriptPubKeyOut2;
             scriptPubKeyOut2 = txPrev.vout[txin.prevout.n].scriptPubKey;
 
             LogPrintf("ScriptKey: %s\n",scriptPubKeyOut2.ToString());
 
         }
-
     }
 
 
@@ -3628,8 +3631,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     }
 
     int64_t blockValue = nCredit;
-    int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, nReward);
-
+    //int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, nReward);
 
     // Set output amount
     if (!hasPayment && txNew.vout.size() == 3) // 2 stake outputs, stake was split, no masternode payment
