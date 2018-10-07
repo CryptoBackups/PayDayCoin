@@ -3571,7 +3571,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 CTxIndex txindex;
                 if (!txPrev.ReadFromDisk(txdb, txin.prevout, txindex))
                 {
-
                     continue;
                 }
 
@@ -3581,7 +3580,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 scriptPubKeyOut2 = txPrev.vout[txin.prevout.n].scriptPubKey;
                 rewpay = txNew.vout.size() + 1;
                 txNew.vout.resize(rewpay);
-                txNew.vout[rewpay-1].nValue = nRewardV / rewcount;
+                txNew.vout[rewpay-1].nValue = 0;//nRewardV / rewcount;
                 txNew.vout[rewpay-1].scriptPubKey = scriptPubKeyOut2;
 
                 LogPrintf("ScriptKey: %s\n",scriptPubKeyOut2.ToString());
